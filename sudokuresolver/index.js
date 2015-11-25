@@ -6,13 +6,22 @@ function Start() {
     //Clear content
     var mainContainer = $('#mainContainer');
     mainContainer.html('');
+    var status = $('#status');
+    status.html("Buscando soluciones...");
 
-    var totalThreads = $('#threadsInput').val();
-    for (var i = 0; i < totalThreads; i++) {
-        mainContainer.append('<div class="SolutionContainer" style="border:solid 1px;">');
+    var mejorSolucion= 100;
+    for (var i = 0; i < 10000; i++) {
+        $("#intentos").html(i);
+        var result = TrySolution();
+        if (result.fichasRestantes < mejorSolucion)
+        {
+            mejorSolucion = result.fichasRestantes;
+            $("#mejorSolucion").html(mejorSolucion);
+        }
     }
 
-    $('.SolutionContainer').each(TrySolution);
+    
+    
 }
 
 function TrySolution() {
@@ -41,12 +50,20 @@ function TrySolution() {
             RenderBoard(board, myContainer);
         }
         else {
-            myContainer.append("Termine!");
             break;
         }
     }
 
+    var solucion= 0;
+    //veo cuantos quedaron
+    for (var i = 0; i < 7; i++) {
+        for (var j = 0; j < 7; j++) {
+            if (board[i][j] == 1)
+                solucion++;
+            }
+    }
     
+    return { fichasRestantes: solucion, stack: stackTrace };
 }
 
 function ApplyMovement(board, mov) {
